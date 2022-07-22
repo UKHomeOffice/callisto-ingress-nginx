@@ -1,0 +1,69 @@
+---
+kind: pipeline
+type: kubernetes
+name: callisto-ingress
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: lint
+    image: pelotech/drone-helm3
+    settings:
+      mode: lint
+      chart: ./helm
+      values_file: ./helm/values.yaml
+
+  - name: deploy to dev
+    image: pelotech/drone-helm3
+    settings:
+      namespace: callisto-dev
+      mode: upgrade
+      chart: ./helm
+      values:
+        - image.tag=${DRONE_COMMIT_SHA}
+        - name=${DRONE_BRANCH}
+      values_file: ./helm/values.yaml
+      release: callisto
+      kube_api_server:
+        from_secret: dev_kube_api_url
+      kube_token:
+        from_secret: dev_kube_token
+    when:
+      event:
+        - push
+
+---
+kind: pipeline
+type: kubernetes
+name: build notifications
+
+trigger:
+  status:
+    - success
+    - failure
+  event:
+    - push
+
+depends_on:
+  - callisto-ingress
+
+steps:
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: SLACK_WEBHOOK_URL
+      channel: callisto-tech-notifications
+      username: Drone
+      template: |
+        {{#success build.status}}
+          Build #{{ build.number }} succeeded! :tada:
+        {{else}}
+          Build #{{ build.number }} failed :alert:
+        {{/success}}
+        Commit: <${DRONE_REPO_LINK}/commit/{{ build.commit }}|{{ truncate build.commit 8 }}> - {{{ trim build.message }}}
+        Repo: {{ repo.name }}
+        Branch: <${DRONE_REPO_LINK}/commits/{{ build.branch }}|{{ build.branch }}>
+        Author: {{ build.author }}

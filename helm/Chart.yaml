@@ -1,0 +1,6 @@
+apiVersion: v2
+name: callisto-ingress
+description: A Helm chart for deploying the Callisto Web
+type: application
+version: 1.0.0
+appVersion: 1.0.0

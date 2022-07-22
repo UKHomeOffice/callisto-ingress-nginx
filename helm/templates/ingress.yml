@@ -1,0 +1,54 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: callisto
+  labels:
+    app: callisto
+    cert-manager.io/solver: route53
+  annotations:
+    # ingress.kubernetes.io/ssl-passthrough: 'true' # instructs the controller to send TLS connections directly to the backend instead of letting NGINX decrypt the communication
+    cert-manager.io/enabled: 'true'
+    ingress.kubernetes.io/force-ssl-redirect: 'true'
+    # cert-manager.io/cluster-issuer: 'letsencrypt-staging'
+    kubernetes.io/ingress.class: 'nginx-internal'
+    kubernetes.io/backend-protocol: 'HTTPS'
+    #policy-admission.acp.homeoffice.gov.uk/kubecertmanager/enable-dns-check: 'false'
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.name | regexFind "([A-Za-z]+-\\d+)" | lower }}-web.dev.callisto.homeoffice.gov.uk 
+        - web.dev.callisto.homeoffice.gov.uk
+        # - "*.web.dev.callisto.homeoffice.gov.uk"
+      secretName: callisto-web-tls
+  rules:
+    - host: {{ .Values.name | regexFind "([A-Za-z]+-\\d+)" | lower }}-web.dev.callisto.homeoffice.gov.uk 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}
+    # - host: "*.web.dev.callisto.homeoffice.gov.uk"
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: {{ .Values.service.name }}
+    #             port:
+    #               number: {{ .Values.service.port }}
+    - host: web.dev.callisto.homeoffice.gov.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}

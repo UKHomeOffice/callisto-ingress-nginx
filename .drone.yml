@@ -29,8 +29,8 @@ steps:
       kube_token:
         from_secret: dev_kube_token
     when:
-      event:
-        - push
+      event: push
+      branch: main
 
 ---
 kind: pipeline

@@ -1,16 +1,8 @@
-name: callisto-web
-appName: callisto-web
+name: callisto
 
 service:
   name: callisto-web
   port: 3000
-
-replicaCount: 1
-
-image:
-  repo: quay.io/ukhomeofficedigital/
-  name: developer-induction
-  version: latest
 
 global:
   ingress:

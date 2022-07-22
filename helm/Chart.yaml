@@ -1,6 +1,6 @@
 apiVersion: v2
-name: callisto-ingress
-description: A Helm chart for deploying the Callisto Web
+name: callisto-ingress-nginx
+description: A Helm chart for deploying the Callisto Ingress
 type: application
 version: 1.0.0
 appVersion: 1.0.0

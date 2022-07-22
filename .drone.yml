@@ -8,7 +8,7 @@ platform:
   arch: amd64
 
 steps:
-  - name: lint
+  - name: lint helm files
     image: pelotech/drone-helm3
     settings:
       mode: lint

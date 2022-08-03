@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: callisto-timecard-restapi
+  labels:
+    app: callisto-timecard-restapi
+    cert-manager.io/solver: route53
+  annotations:
+    cert-manager.io/enabled: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx-internal"
+    kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+    - hosts:
+        - timecard.dev.callisto.homeoffice.gov.uk
+      secretName: callisto-web-tls
+  rules:
+    - host: timecard.dev.callisto.homeoffice.gov.uk
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: callisto-timecard-restapi
+                port:
+                  number: 3000

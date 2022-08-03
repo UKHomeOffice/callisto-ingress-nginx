@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: callisto-timecard-restapi
+  name: { { .Values.timecard.name } }
   labels:
-    app: callisto-timecard-restapi
+    app: { { .Values.timecard.name } }
     cert-manager.io/solver: route53
   annotations:
     cert-manager.io/enabled: "true"
@@ -14,16 +14,16 @@ metadata:
 spec:
   tls:
     - hosts:
-        - timecard.dev.callisto.homeoffice.gov.uk
-      secretName: callisto-web-tls
+        - { { .Values.timecard.host } }
+      secretName: callisto-timecard-tls
   rules:
-    - host: timecard.dev.callisto.homeoffice.gov.uk
+    - host: { { .Values.timecard.host } }
       http:
         paths:
           - path: /api
             pathType: Prefix
             backend:
               service:
-                name: callisto-timecard-restapi
+                name: { { .Values.timecard.service.name } }
                 port:
-                  number: 3000
+                  number: { { .Values.timecard.service.port } }

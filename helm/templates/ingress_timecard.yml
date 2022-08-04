@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: { { .Values.timecard.name } }
+  labels:
+    app: { { .Values.timecard.name } }
+    cert-manager.io/solver: route53
+  annotations:
+    cert-manager.io/enabled: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx-internal"
+    kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+    - hosts:
+        - { { .Values.timecard.host } }
+      secretName: callisto-timecard-tls
+  rules:
+    - host: { { .Values.timecard.host } }
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: { { .Values.timecard.service.name } }
+                port:
+                  number: { { .Values.timecard.service.port } }

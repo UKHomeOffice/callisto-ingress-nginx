@@ -1,0 +1,29 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: { { .Values.ui.name } }
+  labels:
+    app: { { .Values.ui.name } }
+    cert-manager.io/solver: route53
+  annotations:
+    cert-manager.io/enabled: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx-internal"
+    kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  tls:
+    - hosts:
+        - { { .Values.ui.host } }
+      secretName: callisto-web-tls
+  rules:
+    - host: { { .Values.ui.host } }
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: { { .Values.ui.service.name } }
+                port:
+                  number: { { .Values.ui.service.port } }

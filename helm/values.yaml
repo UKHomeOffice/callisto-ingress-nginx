@@ -1,9 +1,13 @@
-name: callisto
+ui:
+  name: callisto
+  service:
+    name: callisto-web
+    port: 3000
+  host: web.dev.callisto.homeoffice.gov.uk
 
-service:
-  name: callisto-web
-  port: 3000
-
-global:
-  ingress:
-    host: web.dev.callisto.homeoffice.gov.uk
+timecard:
+  name: callisto-timecard-restapi
+  service:
+    name: callisto-timecard-restapi
+    port: 3000
+  host: timecard.dev.callisto.homeoffice.gov.uk

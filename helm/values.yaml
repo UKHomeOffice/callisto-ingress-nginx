@@ -10,4 +10,4 @@ timecard:
   service:
     name: callisto-timecard-restapi
     port: 3000
-  host: timecard-api.dev.callisto.homeoffice.gov.uk
+  host: timecard.dev.callisto.homeoffice.gov.uk

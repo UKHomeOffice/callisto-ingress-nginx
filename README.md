@@ -1,1 +1,15 @@
 # Callisto Ingress Nginx
+
+This repo contains ingress configuration for Callisto.
+
+## Formatting Helm files
+
+Prettier adds spacing between brackets in Helm files which prevents Helm from being able to interpret yaml files, eg. `{{ .Values.name }}` becomes `{ { .Values.name } }`.
+
+To get around this, you need to prevent Prettier from running in Helm files by adding the following to your `settings.json` file:
+
+```json
+"[helm]": {
+  "editor.formatOnSave": false
+},
+```

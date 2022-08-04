@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: { { .Values.timecard.name } }
+  name: {{ .Values.timecard.name }}
   labels:
-    app: { { .Values.timecard.name } }
+    app: {{ .Values.timecard.name }}
     cert-manager.io/solver: route53
   annotations:
     cert-manager.io/enabled: "true"
@@ -14,16 +14,16 @@ metadata:
 spec:
   tls:
     - hosts:
-        - { { .Values.timecard.host } }
+        - {{ .Values.timecard.host }}
       secretName: callisto-timecard-tls
   rules:
-    - host: { { .Values.timecard.host } }
+    - host: {{ .Values.timecard.host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: { { .Values.timecard.service.name } }
+                name: {{ .Values.timecard.service.name }}
                 port:
-                  number: { { .Values.timecard.service.port } }
+                  number: {{ .Values.timecard.service.port }}

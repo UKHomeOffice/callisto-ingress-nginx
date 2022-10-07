@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.accruals.name }}
+  labels:
+    app: {{ .Values.accruals.name }}
+    cert-manager.io/solver: route53
+  annotations:
+    cert-manager.io/enabled: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx-internal"
+    kubernetes.io/backend-protocol: "HTTPS"
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/cors-allow-origin: "https://{{ .Values.ui.host }}"
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.accruals.host }}
+      secretName: callisto-accruals-tls
+  rules:
+    - host: {{ .Values.accruals.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.accruals.service.name }}
+                port:
+                  number: {{ .Values.accruals.service.port }}

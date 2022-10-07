@@ -11,3 +11,10 @@ timecard:
     name: callisto-timecard-restapi
     port: 3000
   host: timecard.dev.callisto.homeoffice.gov.uk
+
+accruals:
+  name: callisto-accruals-restapi
+  service:
+    name: callisto-accruals-restapi
+    port: 3000
+  host: accruals.dev.callisto.homeoffice.gov.uk

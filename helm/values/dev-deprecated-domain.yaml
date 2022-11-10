@@ -1,0 +1,20 @@
+ui:
+  name: callisto-deprecated
+  service:
+    name: callisto-web-deprecated
+    port: 3000
+  host: web.dev.callisto.homeoffice.gov.uk
+
+timecard:
+  name: callisto-timecard-restapi-deprecated
+  service:
+    name: callisto-timecard-restapi-deprecated
+    port: 9090
+  host: timecard.dev.callisto.homeoffice.gov.uk
+
+accruals:
+  name: callisto-accruals-restapi-deprecated
+  service:
+    name: callisto-accruals-restapi-deprecated
+    port: 8080
+  host: accruals.dev.callisto.homeoffice.gov.uk

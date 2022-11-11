@@ -15,6 +15,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ui.host }}
+        - {{ .Values.ui.host_deprecated }}
       secretName: callisto-web-tls
   rules:
     - host: {{ .Values.ui.host }}

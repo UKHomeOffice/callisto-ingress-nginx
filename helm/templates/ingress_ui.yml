@@ -15,9 +15,20 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ui.host }}
+        - {{ .Values.ui.host_deprecated }}
       secretName: callisto-web-tls
   rules:
     - host: {{ .Values.ui.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.ui.service.name }}
+                port:
+                  number: {{ .Values.ui.service.port }}
+    - host: {{ .Values.ui.host_deprecated }}
       http:
         paths:
           - path: /

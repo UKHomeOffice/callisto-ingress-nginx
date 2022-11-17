@@ -38,14 +38,13 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress-prod-deploy
+name: callisto-ingress-test-deploy
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  #temporarilly using test values for prod env
   - name: lint helm files
     image: pelotech/drone-helm3
     settings:
@@ -54,7 +53,7 @@ steps:
       values_files:
         - ./helm/test-values.yaml
 
-  - name: deploy to prod
+  - name: deploy to test
     image: pelotech/drone-helm3
     settings:
       namespace: callisto-test

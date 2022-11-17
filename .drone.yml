@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress
+name: callisto-ingress-dev-deploy
 
 platform:
   os: linux
@@ -36,7 +36,7 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress
+name: callisto-ingress-test-deploy
 
 platform:
   os: linux

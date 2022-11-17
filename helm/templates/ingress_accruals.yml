@@ -12,25 +12,14 @@ metadata:
     kubernetes.io/ingress.class: "nginx-internal"
     kubernetes.io/backend-protocol: "HTTPS"
     ingress.kubernetes.io/enable-cors: "true"
-    ingress.kubernetes.io/cors-allow-origin: "https://{{ .Values.ui.host }}, https://{{ .Values.ui.host_deprecated }}"
+    ingress.kubernetes.io/cors-allow-origin: "https://{{ .Values.ui.host }}"
 spec:
   tls:
     - hosts:
         - {{ .Values.accruals.host }}
-        - {{ .Values.accruals.host_deprecated }}
       secretName: callisto-accruals-tls
   rules:
     - host: {{ .Values.accruals.host }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.accruals.service.name }}
-                port:
-                  number: {{ .Values.accruals.service.port }}
-    - host: {{ .Values.accruals.host_deprecated }}
       http:
         paths:
           - path: /

@@ -1,9 +1,9 @@
-#ui:
-#  name: callisto
-#  service:
-#    name: callisto-web
-#    port: 3000
-#  host: web.dev.callisto-notprod.homeoffice.gov.uk
+ui:
+  name: callisto
+  service:
+    name: callisto-web
+    port: 3000
+  host: web.dev.callisto-notprod.homeoffice.gov.uk
 
 timecard:
   name: callisto-timecard-restapi

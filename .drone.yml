@@ -26,7 +26,7 @@ steps:
         - ./helm/values/dev-values.yaml
       release: callisto-ingress-nginx
       kube_certificate: 
-        from_secret: kube_certificate
+        from_secret: notprod_kube_api_certificate
       kube_api_server:
         from_secret: not_prod_kube_api_url
       kube_token:
@@ -67,7 +67,7 @@ steps:
         - ./helm/values/test-values.yaml
       release: callisto-ingress-nginx
       kube_certificate: 
-        from_secret: kube_certificate
+        from_secret: notprod_kube_api_certificate
       kube_api_server:
         from_secret: not_prod_kube_api_url
       kube_token:

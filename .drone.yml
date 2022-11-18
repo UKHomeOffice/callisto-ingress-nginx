@@ -45,9 +45,6 @@ platform:
   os: linux
   arch: amd64
 
-depends_on:
-  - callisto-ingress
-
 steps:
   - name: lint helm files
     image: pelotech/drone-helm3
@@ -75,6 +72,8 @@ steps:
     when:
       event: push
       branch: main
+    depends_on:
+      - callisto-ingress
 
 ---
 kind: pipeline

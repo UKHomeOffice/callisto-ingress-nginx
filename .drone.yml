@@ -1,21 +1,45 @@
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress
+name: lint-files
 
 platform:
   os: linux
   arch: amd64
 
+trigger:
+  event:
+    include:
+      - push
+      - pull_request
+    exclude:
+      - promote
+
 steps:
-  - name: lint helm files
+  - name: lint_helm_files
     image: pelotech/drone-helm3
     settings:
       mode: lint
       chart: ./helm
       values_files:
         - ./helm/values/dev-values.yaml
+        - ./helm/values/test-values.
+        - ./helm/values/prod-values.yaml
 
+
+---
+kind: pipeline
+type: kubernetes
+name: callisto-ingress
+
+platform:
+  os: linux
+  arch: amd64
+
+depends_on:
+  - lint-files
+
+steps:
   - name: deploy to dev
     image: pelotech/drone-helm3
     settings:

@@ -39,6 +39,16 @@ platform:
 depends_on:
   - lint-files
 
+trigger:
+  event:
+    include:
+      - push
+    exclude:
+      - promote
+  branch:
+    - main #temporarily comment out for testing - to be reverted before PR
+#    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
+
 steps:
   - name: deploy to dev
     image: pelotech/drone-helm3
@@ -55,9 +65,6 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: dev_kube_token
-    when:
-      event: push
-      branch: main
 
 
 ---
@@ -71,6 +78,16 @@ platform:
 
 depends_on:
   - callisto-ingress-dev-deploy
+
+trigger:
+  event:
+    include:
+      - push
+    exclude:
+      - promote
+  branch:
+    - main #temporarily comment out for testing - to be reverted before PR
+#    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
 
 steps:
   - name: deploy to test
@@ -88,9 +105,6 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: test_kube_token
-    when:
-      event: push
-      branch: main
 
 ---
 kind: pipeline

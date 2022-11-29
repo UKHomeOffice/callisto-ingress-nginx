@@ -30,7 +30,7 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress
+name: callisto-ingress-dev-deploy
 
 platform:
   os: linux
@@ -70,17 +70,9 @@ platform:
   arch: amd64
 
 depends_on:
-  - callisto-ingress
+  - callisto-ingress-dev-deploy
 
 steps:
-  - name: lint helm files
-    image: pelotech/drone-helm3
-    settings:
-      mode: lint
-      chart: ./helm
-      values_files:
-        - ./helm/values/test-values.yaml
-
   - name: deploy to test
     image: pelotech/drone-helm3
     settings:
@@ -113,7 +105,8 @@ trigger:
     - push
 
 depends_on:
-  - callisto-ingress
+  - callisto-ingress-dev-deploy
+  - callisto-ingress-test-deploy
 
 steps:
   - name: slack

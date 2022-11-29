@@ -23,7 +23,7 @@ steps:
       chart: ./helm
       values_files:
         - ./helm/values/dev-values.yaml
-        - ./helm/values/test-values.
+        - ./helm/values/test-values.yaml
         - ./helm/values/prod-values.yaml
 
 

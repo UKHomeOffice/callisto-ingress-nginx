@@ -96,8 +96,8 @@ trigger:
     exclude:
       - promote
   branch:
-    - main #temporarily comment out for testing - to be reverted before PR
-#    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
+#    - main #temporarily comment out for testing - to be reverted before PR
+    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
 
 steps:
   - name: deploy to dev
@@ -115,6 +115,9 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: dev_kube_token
+    when: #temporarily add for testing - to be reverted before PR
+      event: #+
+        - pull_request #+
 
 
 ---

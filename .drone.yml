@@ -30,6 +30,56 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
+name: promotion-check
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  event:
+    - promote
+
+steps:
+  - name: branch-check
+    pull: if-not-exists
+    image: alpine:latest
+    commands:
+      - echo Cannot promote from non 'main' branch
+      - exit 1
+    when:
+      branch:
+        exclude:
+          #          - main #temporarily comment out for testing - to be reverted before PR
+          - $DRONE_BRANCH #temporarily use current branch for testing
+
+  - name: environment-check
+    pull: if-not-exists
+    image: alpine:latest
+    commands:
+      - echo Cannot promote to a non prod environment
+      - exit 1
+    when:
+      target:
+        exclude:
+          - production
+
+  - name: build-check
+    pull: if-not-exists
+    image: drone/cli:1.6.2-alpine
+    environment:
+      DRONE_BUILD_PARENT: ${DRONE_BUILD_PARENT}
+      DRONE_SERVER: https://drone-gh.acp.homeoffice.gov.uk
+      DRONE_TOKEN:
+        from_secret: drone_token
+    commands:
+      - LAST_BUILD=$(drone build ls --format '{{.Number}}' --branch "$DRONE_BRANCH" --status success --event push --limit 100 "$DRONE_REPO" | head -n 1)
+      - if [ $LAST_BUILD != $DRONE_BUILD_PARENT ]; then echo 'Could not promote as last build was not successful'; exit 1; fi
+
+
+---
+kind: pipeline
+type: kubernetes
 name: callisto-ingress-dev-deploy
 
 platform:
@@ -105,6 +155,43 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: test_kube_token
+
+
+---
+kind: pipeline
+type: kubernetes
+name: callisto-ingress-prod-deploy
+
+platform:
+  os: linux
+  arch: amd64
+
+depends_on:
+  - promotion-check
+
+trigger:
+  event:
+    - promote
+  target:
+    - production
+
+steps:
+  - name: deploy to prod
+    image: pelotech/drone-helm3
+    settings:
+      namespace: callisto-prod
+      mode: upgrade
+      chart: ./helm
+      values_files:
+        - ./helm/values/prod-values.yaml
+      release: callisto-ingress-nginx
+      kube_certificate:
+        from_secret: prod_kube_api_certificate
+      kube_api_server:
+        from_secret: prod_kube_api_url
+      kube_token:
+        from_secret: prod_kube_token
+
 
 ---
 kind: pipeline

@@ -145,6 +145,8 @@ trigger:
 steps:
   - name: deploy to test
     image: pelotech/drone-helm3
+    commands:
+      - exit 1
     settings:
       namespace: callisto-test
       mode: upgrade

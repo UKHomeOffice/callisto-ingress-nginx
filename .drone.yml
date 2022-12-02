@@ -189,10 +189,6 @@ steps:
         from_secret: prod_kube_api_url
       kube_token:
         from_secret: prod_kube_token
-    when: #temporarily added for testing - to be reverted before PR
-      branch: #+
-        exclude: #+
-          - task/eahw-2428/manual-promote-to-prod-pipeline #+
 
 
 ---

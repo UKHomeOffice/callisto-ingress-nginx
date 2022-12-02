@@ -204,8 +204,6 @@ trigger:
   status:
     - success
     - failure
-  event:
-    - push
 
 slack: &slack
   image: plugins/slack

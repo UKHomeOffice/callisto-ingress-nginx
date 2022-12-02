@@ -96,8 +96,7 @@ trigger:
     exclude:
       - promote
   branch:
-#    - main #temporarily comment out for testing - to be reverted before PR
-    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
+    - main
 
 steps:
   - name: deploy to dev
@@ -115,9 +114,6 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: dev_kube_token
-    when: #temporarily add for testing - to be reverted before PR
-      event: #+
-        - pull_request #+
 
 
 ---
@@ -139,14 +135,11 @@ trigger:
     exclude:
       - promote
   branch:
-#    - main #temporarily comment out for testing - to be reverted before PR
-    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
+    - main
 
 steps:
   - name: deploy to test
     image: pelotech/drone-helm3
-    commands:
-      - exit 1
     settings:
       namespace: callisto-test
       mode: upgrade
@@ -196,6 +189,10 @@ steps:
         from_secret: prod_kube_api_url
       kube_token:
         from_secret: prod_kube_token
+    when: #temporarily added for testing - to be reverted before PR
+      branch: #+
+        exclude: #+
+          - task/eahw-2428/manual-promote-to-prod-pipeline #+
 
 
 ---
@@ -210,18 +207,23 @@ trigger:
   event:
     - push
 
+slack: &slack
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: slack_webhook_url
+    channel: callisto-tech-notifications
+    username: Drone
+
 depends_on:
   - callisto-ingress-dev-deploy
   - callisto-ingress-test-deploy
+  - callisto-ingress-prod-deploy
 
 steps:
   - name: slack
-    image: plugins/slack
+    <<: *slack
     settings:
-      webhook:
-        from_secret: slack_webhook_url
-      channel: callisto-tech-notifications
-      username: Drone
       template: |
         {{#success build.status}}
           Build #{{ build.number }} succeeded! :tada:
@@ -232,3 +234,20 @@ steps:
         Repo: {{ repo.name }}
         Branch: <${DRONE_REPO_LINK}/commits/{{ build.branch }}|{{ build.branch }}>
         Author: {{ build.author }}
+    when:
+      event:
+        - push
+
+
+  - name: slack promotion
+    <<: *slack
+    settings:
+      template: >
+        {{#success build.status}}
+          :rocket: Successful *{{uppercasefirst build.deployTo}}* deployment for *{{repo.name}} build #{{build.number}}*.          
+        {{else}}
+          :zombie: Problem *{{uppercasefirst build.deployTo}}* deployment failed for *{{repo.name}} <${DRONE_BUILD_LINK}| build #{{build.number}}*>.
+        {{/success}}
+    when:
+      event:
+        - promote

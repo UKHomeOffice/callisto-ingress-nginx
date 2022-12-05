@@ -96,7 +96,8 @@ trigger:
     exclude:
       - promote
   branch:
-    - main
+    #          - main #temporarily comment out for testing - to be reverted before PR
+    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
 
 steps:
   - name: deploy to dev
@@ -135,7 +136,8 @@ trigger:
     exclude:
       - promote
   branch:
-    - main
+    #          - main #temporarily comment out for testing - to be reverted before PR
+    - task/eahw-2428/manual-promote-to-prod-pipeline #temporarily use current branch for testing
 
 steps:
   - name: deploy to test

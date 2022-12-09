@@ -11,7 +11,7 @@ timecard:
     name: callisto-timecard-restapi
     port: 9090
   host: timecard.callisto.homeoffice.gov.uk
-  tls_secret_name: callisto-timecard-tls-7c4n6-2hm4n
+  tls_secret_name: callisto-timecard-tls-7c4n6-2hm4n #TODO: EAHW-2481
 
 accruals:
   name: callisto-accruals-restapi

@@ -1,21 +1,103 @@
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ingress
+name: lint-files
 
 platform:
   os: linux
   arch: amd64
 
+trigger:
+  event:
+    include:
+      - push
+      - pull_request
+    exclude:
+      - promote
+
 steps:
-  - name: lint helm files
+  - name: lint_helm_files
     image: pelotech/drone-helm3
     settings:
       mode: lint
       chart: ./helm
       values_files:
         - ./helm/values/dev-values.yaml
+        - ./helm/values/test-values.yaml
+        - ./helm/values/prod-values.yaml
 
+
+---
+kind: pipeline
+type: kubernetes
+name: promotion-check
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  event:
+    - promote
+
+steps:
+  - name: branch-check
+    pull: if-not-exists
+    image: alpine:latest
+    commands:
+      - echo Cannot promote from non 'main' branch
+      - exit 1
+    when:
+      branch:
+        exclude:
+          - main
+
+  - name: environment-check
+    pull: if-not-exists
+    image: alpine:latest
+    commands:
+      - echo Cannot promote to a non prod environment
+      - exit 1
+    when:
+      target:
+        exclude:
+          - production
+
+  - name: build-check
+    pull: if-not-exists
+    image: drone/cli:1.6.2-alpine
+    environment:
+      DRONE_BUILD_PARENT: ${DRONE_BUILD_PARENT}
+      DRONE_SERVER: https://drone-gh.acp.homeoffice.gov.uk
+      DRONE_TOKEN:
+        from_secret: drone_token
+    commands:
+      - chmod +x ./pipeline-scripts/check-build-promotion.sh
+      - ./pipeline-scripts/check-build-promotion.sh
+
+
+---
+kind: pipeline
+type: kubernetes
+name: callisto-ingress-dev-deploy
+
+platform:
+  os: linux
+  arch: amd64
+
+depends_on:
+  - lint-files
+
+trigger:
+  event:
+    include:
+      - push
+    exclude:
+      - promote
+  branch:
+    - main
+
+steps:
   - name: deploy to dev
     image: pelotech/drone-helm3
     settings:
@@ -31,9 +113,6 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: dev_kube_token
-    when:
-      event: push
-      branch: main
 
 
 ---
@@ -46,17 +125,18 @@ platform:
   arch: amd64
 
 depends_on:
-  - callisto-ingress
+  - callisto-ingress-dev-deploy
+
+trigger:
+  event:
+    include:
+      - push
+    exclude:
+      - promote
+  branch:
+    - main
 
 steps:
-  - name: lint helm files
-    image: pelotech/drone-helm3
-    settings:
-      mode: lint
-      chart: ./helm
-      values_files:
-        - ./helm/values/test-values.yaml
-
   - name: deploy to test
     image: pelotech/drone-helm3
     settings:
@@ -72,9 +152,43 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: test_kube_token
-    when:
-      event: push
-      branch: main
+
+
+---
+kind: pipeline
+type: kubernetes
+name: callisto-ingress-prod-deploy
+
+platform:
+  os: linux
+  arch: amd64
+
+depends_on:
+  - promotion-check
+
+trigger:
+  event:
+    - promote
+  target:
+    - production
+
+steps:
+  - name: deploy to prod
+    image: pelotech/drone-helm3
+    settings:
+      namespace: callisto-prod
+      mode: upgrade
+      chart: ./helm
+      values_files:
+        - ./helm/values/prod-values.yaml
+      release: callisto-ingress-nginx
+      kube_certificate:
+        from_secret: prod_kube_api_certificate
+      kube_api_server:
+        from_secret: prod_kube_api_url
+      kube_token:
+        from_secret: prod_kube_token
+
 
 ---
 kind: pipeline
@@ -85,20 +199,24 @@ trigger:
   status:
     - success
     - failure
-  event:
-    - push
+
+slack: &slack
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: slack_webhook_url
+    channel: callisto-tech-notifications
+    username: Drone
 
 depends_on:
-  - callisto-ingress
+  - callisto-ingress-dev-deploy
+  - callisto-ingress-test-deploy
+  - callisto-ingress-prod-deploy
 
 steps:
   - name: slack
-    image: plugins/slack
+    <<: *slack
     settings:
-      webhook:
-        from_secret: slack_webhook_url
-      channel: callisto-tech-notifications
-      username: Drone
       template: |
         {{#success build.status}}
           Build #{{ build.number }} succeeded! :tada:
@@ -109,3 +227,20 @@ steps:
         Repo: {{ repo.name }}
         Branch: <${DRONE_REPO_LINK}/commits/{{ build.branch }}|{{ build.branch }}>
         Author: {{ build.author }}
+    when:
+      event:
+        - push
+
+
+  - name: slack promotion
+    <<: *slack
+    settings:
+      template: >
+        {{#success build.status}}
+          :rocket: Successful *{{uppercasefirst build.deployTo}}* deployment for *{{repo.name}} build #{{build.number}}*.          
+        {{else}}
+          :zombie: Problem *{{uppercasefirst build.deployTo}}* deployment failed for *{{repo.name}} <${DRONE_BUILD_LINK}| build #{{build.number}}>*.
+        {{/success}}
+    when:
+      event:
+        - promote

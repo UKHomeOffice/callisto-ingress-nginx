@@ -118,10 +118,11 @@ steps:
     pull: if-not-exists
     image: alpine/curl:3.14
     commands:
-      - chmod +x ./scripts/is-url-up.sh
-      - ./scripts/is-url-up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
-      - ./scripts/is-url-up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
-      - ./scripts/is-url-up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+      - ./up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
     when:
       event:
         - push
@@ -174,9 +175,10 @@ steps:
     pull: if-not-exists
     image: alpine/curl:3.14
     commands:
-      - chmod +x ./scripts/is-url-up.sh
-      - ./scripts/is-url-up.sh https://web.test.callisto-notprod.homeoffice.gov.uk/health
-      - ./scripts/is-url-up.sh https://timecard.test.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.test.callisto-notprod.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.test.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
     when:
       event:
         - push
@@ -226,9 +228,10 @@ steps:
     pull: if-not-exists
     image: alpine/curl:3.14
     commands:
-      - chmod +x ./scripts/is-url-up.sh
-      - ./scripts/is-url-up.sh https://web.callisto.homeoffice.gov.uk/health
-      - ./scripts/is-url-up.sh https://timecard.callisto.homeoffice.gov.uk/swagger-ui/index.html
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.callisto.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.callisto.homeoffice.gov.uk/swagger-ui/index.html
     when:
       event:
         - push

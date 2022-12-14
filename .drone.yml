@@ -121,6 +121,7 @@ steps:
       - chmod +x ./scripts/is-url-up.sh
       - ./scripts/is-url-up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
       - ./scripts/is-url-up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+      - ./scripts/is-url-up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
     when:
       event:
         - push

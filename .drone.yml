@@ -114,6 +114,22 @@ steps:
       kube_token:
         from_secret: dev_kube_token
 
+  - name: check dev up
+    pull: if-not-exists
+    image: alpine/curl:3.14
+    commands:
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+      - ./up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
+    when:
+      event:
+        - push
+      branch:
+        - main
+    depends_on:
+      - deploy to dev
 
 ---
 kind: pipeline
@@ -152,7 +168,24 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: test_kube_token
+    depends_on:
+      - check dev up
 
+  - name: check test up
+    pull: if-not-exists
+    image: alpine/curl:3.14
+    commands:
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.test.callisto-notprod.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.test.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+    when:
+      event:
+        - push
+      branch:
+        - main
+    depends_on:
+      - deploy to test
 
 ---
 kind: pipeline
@@ -188,7 +221,24 @@ steps:
         from_secret: prod_kube_api_url
       kube_token:
         from_secret: prod_kube_token
+    depends_on:
+      - check test up
 
+  - name: check prod up
+    pull: if-not-exists
+    image: alpine/curl:3.14
+    commands:
+      - curl -s https://raw.githubusercontent.com/UKHomeOffice/callisto-ui-nginx/main/scripts/is-url-up.sh >up.sh
+      - chmod +x ./up.sh
+      - ./up.sh https://web.callisto.homeoffice.gov.uk/health
+      - ./up.sh https://timecard.callisto.homeoffice.gov.uk/swagger-ui/index.html
+    when:
+      event:
+        - push
+      branch:
+        - main
+    depends_on:
+      - deploy to prod
 
 ---
 kind: pipeline

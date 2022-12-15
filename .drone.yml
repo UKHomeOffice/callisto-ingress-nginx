@@ -168,8 +168,6 @@ steps:
         from_secret: not_prod_kube_api_url
       kube_token:
         from_secret: test_kube_token
-    depends_on:
-      - check dev up
 
   - name: check test up
     pull: if-not-exists
@@ -221,8 +219,6 @@ steps:
         from_secret: prod_kube_api_url
       kube_token:
         from_secret: prod_kube_token
-    depends_on:
-      - check test up
 
   - name: check prod up
     pull: if-not-exists

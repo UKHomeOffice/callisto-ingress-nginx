@@ -294,12 +294,11 @@ steps:
 ---
 kind: pipeline
 type: kubernetes
-name: callisto-ui urgent notifications
+name: urgent notifications
 
 trigger:
   status:
     - failure
-    - success
 
 depends_on:
   - callisto-ingress-dev-deploy
@@ -325,7 +324,7 @@ steps:
         Author: {{ build.author }}
     when:
       branch:
-        - eahw-2347/urgent-slack-alerts
+        - main
 
   - name: slack_deploy_urgent
     image: plugins/slack

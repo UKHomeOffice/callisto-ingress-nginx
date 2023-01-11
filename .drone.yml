@@ -299,6 +299,7 @@ name: callisto-ui urgent notifications
 trigger:
   status:
     - failure
+    - success
 
 depends_on:
   - callisto-ingress-dev-deploy
@@ -324,7 +325,7 @@ steps:
         Author: {{ build.author }}
     when:
       branch:
-        - main
+        - eahw-2347/urgent-slack-alerts
 
   - name: slack_deploy_urgent
     image: plugins/slack

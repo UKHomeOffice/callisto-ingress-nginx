@@ -1,3 +1,6 @@
+common:
+  cors_origin: web.callisto.homeoffice.gov.uk
+
 ui:
   name: callisto
   service:

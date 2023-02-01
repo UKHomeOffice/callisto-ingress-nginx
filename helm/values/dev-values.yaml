@@ -1,3 +1,6 @@
+common:
+  cors_origin: "*.dev.callisto-notprod.homeoffice.gov.uk"
+
 ui:
   name: callisto
   service:
@@ -11,7 +14,6 @@ timecard:
     name: callisto-timecard-restapi
     port: 9090
   host: timecard.dev.callisto-notprod.homeoffice.gov.uk
-  cors_origin: "*.dev.callisto-notprod.homeoffice.gov.uk"
   tls_secret_name: callisto-timecard-tls
 
 accruals:
@@ -20,4 +22,3 @@ accruals:
     name: callisto-accruals-restapi
     port: 8080
   host: accruals.dev.callisto-notprod.homeoffice.gov.uk
-  cors_origin: "*.dev.callisto-notprod.homeoffice.gov.uk"

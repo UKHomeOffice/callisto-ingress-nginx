@@ -22,3 +22,10 @@ accruals:
     name: callisto-accruals-restapi
     port: 8080
   host: accruals.callisto.homeoffice.gov.uk
+
+person:
+  name: callisto-person-restapi
+  service:
+    name: callisto-person-restapi
+    port: 8080
+  host: person.callisto.homeoffice.gov.uk

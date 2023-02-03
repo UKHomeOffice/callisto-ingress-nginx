@@ -123,6 +123,7 @@ steps:
       - ./up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
       - ./up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
       - ./up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
+      - ./up.sh https://person.dev.callisto-notprod.homeoffice.gov.uk/test
     when:
       event:
         - push

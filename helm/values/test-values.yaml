@@ -28,4 +28,4 @@ peron:
   service:
     name: callisto-peron-restapi
     port: 9090
-  host: peron.test.callisto-notprod.homeoffice.gov.uk
+  host: person.test.callisto-notprod.homeoffice.gov.uk

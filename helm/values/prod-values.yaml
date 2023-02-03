@@ -27,5 +27,5 @@ person:
   name: callisto-person-restapi
   service:
     name: callisto-person-restapi
-    port: 8080
+    port: 9090
   host: person.callisto.homeoffice.gov.uk

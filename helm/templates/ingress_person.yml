@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.person.name }}
+  labels:
+    app: {{ .Values.person.name }}
+    cert-manager.io/solver: route53
+  annotations:
+    cert-manager.io/enabled: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx-internal"
+    kubernetes.io/backend-protocol: "HTTPS"
+    ingress.kubernetes.io/enable-cors: "true"
+    ingress.kubernetes.io/cors-allow-origin: "https://{{ .Values.common.cors_origin }}"
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.person.host }}
+      secretName: callisto-person-tls
+  rules:
+    - host: {{ .Values.person.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.person.service.name }}
+                port:
+                  number: {{ .Values.person.service.port }}

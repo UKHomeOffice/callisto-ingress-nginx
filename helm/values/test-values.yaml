@@ -23,9 +23,9 @@ accruals:
     port: 8080
   host: accruals.test.callisto-notprod.homeoffice.gov.uk
 
-peron:
-  name: callisto-peron-restapi
+person:
+  name: callisto-person-restapi
   service:
-    name: callisto-peron-restapi
+    name: callisto-person-restapi
     port: 9090
   host: person.test.callisto-notprod.homeoffice.gov.uk

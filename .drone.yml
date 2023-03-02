@@ -123,7 +123,7 @@ steps:
       - ./up.sh https://web.dev.callisto-notprod.homeoffice.gov.uk/health
       - ./up.sh https://timecard.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
       - ./up.sh https://accruals.dev.callisto-notprod.homeoffice.gov.uk/test
-      - ./up.sh https://person.dev.callisto-notprod.homeoffice.gov.uk/test
+      - ./up.sh https://person.dev.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
     when:
       event:
         - push
@@ -178,6 +178,7 @@ steps:
       - chmod +x ./up.sh
       - ./up.sh https://web.test.callisto-notprod.homeoffice.gov.uk/health
       - ./up.sh https://timecard.test.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
+      - ./up.sh https://person.test.callisto-notprod.homeoffice.gov.uk/swagger-ui/index.html
     when:
       event:
         - push
@@ -229,6 +230,7 @@ steps:
       - chmod +x ./up.sh
       - ./up.sh https://web.callisto.homeoffice.gov.uk/health
       - ./up.sh https://timecard.callisto.homeoffice.gov.uk/swagger-ui/index.html
+      - ./up.sh https://person.callisto.homeoffice.gov.uk/swagger-ui/index.html
     when:
       event:
         - push

@@ -20,7 +20,7 @@ accruals:
   name: callisto-accruals-restapi
   service:
     name: callisto-accruals-restapi
-    port: 8080
+    port: 9090
   host: accruals.dev.callisto-notprod.homeoffice.gov.uk
 
 person:

@@ -197,7 +197,14 @@ trigger:
   event:
     - promote
   target:
+    exclude:
     - production
+#To reinstate prod deployment change the trigger to:
+#trigger:
+#  event:
+#    - promote
+#  target:
+#      - production
 
 steps:
   - name: deploy to prod

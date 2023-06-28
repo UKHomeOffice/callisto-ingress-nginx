@@ -85,13 +85,21 @@ platform:
 
 depends_on:
   - lint-files
-
 trigger:
   event:
-    include:
-      - push
     exclude:
+      - push
+      - pull_request
+      - tag
       - promote
+      - rollback
+# to reinstate dev deploy change trigger to
+# trigger:
+#   event:
+#     include:
+#       - push
+#     exclude:
+#       - promote
   branch:
     - main
 
@@ -144,10 +152,19 @@ depends_on:
 
 trigger:
   event:
-    include:
-      - push
     exclude:
+      - push
+      - pull_request
+      - tag
       - promote
+      - rollback
+# to reinstate test deploy change trigger to
+# trigger:
+#   event:
+#     include:
+#       - push
+#     exclude:
+#       - promote
   branch:
     - main
 
